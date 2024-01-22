@@ -27,6 +27,8 @@ jobs:
 
 
 - job: DownloadOtherPipelineArtifact
+  dependsOn: GetLatestSuccessfulRunID
+  condition: succeeded()
   displayName: "Download Other Pipeline Artifact"
   steps:
   - task: DownloadPipelineArtifact@2
