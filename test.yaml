@@ -36,3 +36,9 @@ jobs:
       definition: "{{ variables.$RunID }}"
       artifactName: "ADFArtifact"
       targetpath: "$(Pipeline.Workspace)/OtherPipelineFiles"
+  
+  - task: CmdLine@2
+    displayName: "List Contents of the Pipeline ADF Artifact Workspace"
+    inputs:
+      script: dir
+      workingDirectory: "$(Pipeline.Workspace)/OtherPipelineFiles"
