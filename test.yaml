@@ -7,8 +7,8 @@ pool:
 
 parameters:
 - name: PipelineID
-  type: string
-  default: "1"
+  type: int
+  default: 1
 # Pipeline ID of the pipeline you want to grab the artifact from the most recent successful run.
 # To find the pipeline ID, 
 
@@ -17,7 +17,7 @@ jobs:
 - job: GetLatestSuccessfulRunID # Automatically gets the latest run ID of the pipeline. This will be used to download the artifact later.
   steps:
   - bash: |
-      LatestSuccessfulRunID=$(az pipelines build list --definition-ids "{{ parameters.PipelineID }}" --detect true --project "AzurePipelineDataFactoryCICD" --result succeeded --status completed --top 1 --query "reverse(sort_by(@, &finishTime)) | [0].id")
+      LatestSuccessfulRunID=$(az pipelines build list --definition-ids {{ parameters.PipelineID }} --detect true --project "AzurePipelineDataFactoryCICD" --result succeeded --status completed --top 1 --query "reverse(sort_by(@, &finishTime)) | [0].id")
       echo "The latest successful pipeline RunID is $LatestSuccessfulRunID"
       echo "##vso[task.setvariable variable=RunID;isOutput=true]$LastestSuccessfulRunID"
     name: GetPipelineRunIDScript
