@@ -7,7 +7,7 @@ pool:
 
 parameters:
 - name: PipelineID
-  type: int
+  type: number
   default: 1
 # Pipeline ID of the pipeline you want to grab the artifact from the most recent successful run.
 # To find the pipeline ID, 
