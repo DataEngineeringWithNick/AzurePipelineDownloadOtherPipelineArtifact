@@ -1,4 +1,4 @@
-name: GetOtherPipelineArtifactAutomatically-$(Date:yyyyMMdd)$(Rev:.r)
+name: DownloadArtifactFromDataFactoryCICDPipeline-$(Date:yyyyMMdd)$(Rev:.r)
 
 trigger: none
 
@@ -8,7 +8,7 @@ pool:
 parameters:
 - name: PipelineID
   type: string
-  default: "32"
+  default: "1"
 # Pipeline ID of the pipeline you want to grab the artifact from the most recent successful run.
 # To find the pipeline ID, 
 
