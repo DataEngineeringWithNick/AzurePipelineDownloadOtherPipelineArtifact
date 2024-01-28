@@ -30,7 +30,8 @@ jobs:
     inputs:
       buildType: "specific"
       project: "AzurePipelineDataFactoryCICD"
-      definition: $(GetPipelineRunIDScript.RunID)
+      definition: ${{ parameters.PipelineID }}
+      pipelineId: $(GetPipelineRunIDScript.RunID) 
       artifactName: "ADFArtifact"
       targetpath: "$(Pipeline.Workspace)/OtherPipelineFiles"
   
