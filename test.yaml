@@ -21,7 +21,7 @@ jobs:
       echo "The latest successful pipeline RunID is: $LatestSuccessfulRunID"
       echo "##vso[task.setvariable variable=RunID;isOutput=true]$LastestSuccessfulRunID"
     name: GetPipelineRunIDScript
-    displayName: "Get Lastest Successful Pipeline Run ].id"
+    displayName: "Get Lastest Successful Pipeline RunID"
     env:
       AZURE_DEVOPS_EXT_PAT: $(System.AccessToken)
     
@@ -30,7 +30,7 @@ jobs:
     inputs:
       buildType: "specific"
       project: "AzurePipelineDataFactoryCICD"
-      definition: "$(GetPipelineRunIDScript.RunID)"
+      definition: $(GetPipelineRunIDScript.RunID)
       artifactName: "ADFArtifact"
       targetpath: "$(Pipeline.Workspace)/OtherPipelineFiles"
   
