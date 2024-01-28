@@ -43,24 +43,25 @@ jobs:
 
 
 
-# - job: DownloadOtherPipelineArtifact
-#   dependsOn: GetLatestSuccessfulRunID
-#   condition: succeeded()
-#   displayName: "Download Other Pipeline Artifact"
-#   variables:
-#     PipelineRunID: $[ dependencies.GetLatestSuccessfulRunID.outputs['GetPipelineRunIDScript.RunID'] ]
-#   steps:
-#   - task: DownloadPipelineArtifact@2
-#     displayName: "Download The ADF Artifact"
-#     inputs:
-#       buildType: "specific"
-#       project: "AzurePipelineDataFactoryCICD"
-#       definition: "$(PipelineRunID)"
-#       artifactName: "ADFArtifact"
-#       targetpath: "$(Pipeline.Workspace)/OtherPipelineFiles"
+- job: DownloadOtherPipelineArtifact
+  dependsOn: GetLatestSuccessfulRunID
+  condition: succeeded()
+  displayName: "Download Other Pipeline Artifact"
+  variables:
+    PipelineRunID: $[ dependencies.GetLatestSuccessfulRunID.outputs['GetPipelineRunIDScript.RunID'] ]
+  steps:
+  - task: DownloadPipelineArtifact@2
+    displayName: "Download The ADF Artifact"
+    inputs:
+      buildType: "specific"
+      project: "AzurePipelineDataFactoryCICD"
+      definition: ${{ parameters.PipelineID }}
+      pipelineId: "$(PipelineRunID)"
+      artifactName: "ADFArtifact"
+      targetpath: "$(Pipeline.Workspace)/OtherPipelineFiles"
   
-#   - task: CmdLine@2
-#     displayName: "List Contents of the Pipeline ADF Artifact Workspace"
-#     inputs:
-#       script: dir
-#       workingDirectory: "$(Pipeline.Workspace)/OtherPipelineFiles"
+  - task: CmdLine@2
+    displayName: "List Contents of the Pipeline ADF Artifact Workspace"
+    inputs:
+      script: dir
+      workingDirectory: "$(Pipeline.Workspace)/OtherPipelineFiles"
