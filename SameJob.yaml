@@ -37,5 +37,5 @@ jobs:
     displayName: "List Contents of the ADF Artifact"
     inputs:
       script: dir
-      workingDirectory: "$(Pipeline.Workspace)/OtherPipelineFiles" 
+      workingDirectory: "$(Pipeline.Workspace)/MyPipelineFolder" 
 
