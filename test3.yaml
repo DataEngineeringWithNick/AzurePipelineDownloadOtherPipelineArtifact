@@ -1,7 +1,5 @@
 name: DownloadArtifactFromDataFactoryCICDPipeline-$(Date:yyyyMMdd)$(Rev:.r)
 
-# How to use the RunID in a different job. For the same job, see the other YAML file.
-
 trigger: none
 
 pool:
@@ -11,11 +9,13 @@ parameters:
 - name: PipelineID
   type: number
   default: 1
-# Pipeline ID of the pipeline you want to grab the artifact from. 
+# Pipeline ID of the pipeline you want to grab the artifact from the most recent successful run.
+# To find the pipeline ID, 
+
 
 jobs:
 - job: GetLatestSuccessfulRunIDAndDownloadArtifact 
-  # Automatically gets the latest successful run ID of the other pipeline (PipelineID parameter).
+  # Automatically gets the latest successful run ID of the other pipeline (PipelineID parameter) and will download the artifact.
   steps:
   - bash: |
       LatestSuccessfulRunID=$(az pipelines build list --definition-ids ${{ parameters.PipelineID }} --detect true --org "https://dev.azure.com/DataEngineeringWithNick" --project "AzurePipelineDataFactoryCICD" --result succeeded --status completed --top 1 --query "reverse(sort_by(@, &finishTime)) | [0].id")
@@ -26,6 +26,24 @@ jobs:
     env:
       AZURE_DEVOPS_EXT_PAT: $(System.AccessToken)
     
+  - task: DownloadPipelineArtifact@2
+    displayName: "Download The ADF Artifact"
+    inputs:
+      buildType: "specific"
+      project: "AzurePipelineDataFactoryCICD"
+      definition: ${{ parameters.PipelineID }}
+      pipelineId: $(GetPipelineRunIDScript.RunID) 
+      artifactName: "ADFArtifact"
+      targetpath: "$(Pipeline.Workspace)/OtherPipelineFiles"
+  
+  - task: CmdLine@2
+    displayName: "List Contents of the Pipeline ADF Artifact Workspace"
+    inputs:
+      script: dir
+      workingDirectory: "$(Pipeline.Workspace)/OtherPipelineFiles" 
+
+
+
 - job: DownloadOtherPipelineArtifact
   dependsOn: GetLatestSuccessfulRunID
   condition: succeeded()
@@ -38,8 +56,8 @@ jobs:
     inputs:
       buildType: "specific"
       project: "AzurePipelineDataFactoryCICD"
-      pipeline: ${{ parameters.PipelineID }}
-      runId: "$(PipelineRunID)"
+      definition: ${{ parameters.PipelineID }}
+      pipelineId: "$(PipelineRunID)"
       artifactName: "ADFArtifact"
       targetpath: "$(Pipeline.Workspace)/OtherPipelineFiles"
   

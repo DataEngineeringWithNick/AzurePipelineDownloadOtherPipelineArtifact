@@ -14,7 +14,7 @@ parameters:
 # Pipeline ID of the pipeline you want to grab the artifact from. 
 
 jobs:
-- job: GetLatestSuccessfulRunIDAndDownloadArtifact 
+- job: GetLatestSuccessfulRunID 
   # Automatically gets the latest successful run ID of the other pipeline (PipelineID parameter).
   steps:
   - bash: |
