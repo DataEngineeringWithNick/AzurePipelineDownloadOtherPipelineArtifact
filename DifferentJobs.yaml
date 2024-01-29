@@ -1,6 +1,6 @@
 name: DownloadArtifactFromDataFactoryCICDPipeline-$(Date:yyyyMMdd)$(Rev:.r)
 
-# How to use the RunID in a different job. For the same job, see the other YAML file.
+# How to use the RunID in a different job. For the same job, see the SameJob.yaml file.
 
 trigger: none
 

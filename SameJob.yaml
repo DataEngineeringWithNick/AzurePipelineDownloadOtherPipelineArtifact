@@ -1,5 +1,7 @@
 name: DownloadArtifactFromDataFactoryCICDPipeline-$(Date:yyyyMMdd)$(Rev:.r)
 
+# How to use the RunID and download the artifact in the same job. To download the artifact in a different job, see the DifferentJobs.yaml file.
+
 trigger: none # Manual trigger
 
 pool:
