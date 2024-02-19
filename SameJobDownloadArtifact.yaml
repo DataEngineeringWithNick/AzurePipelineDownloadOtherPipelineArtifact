@@ -36,7 +36,8 @@ jobs:
 
       else
         echo "The predefined pipeline RunID that will be used is: ${{ parameters.PipelineRunIDOptional }}"
-        echo "##vso[task.setvariable variable=RunID;]${{ parameters.PipelineRunIDOptional }}"
+        PredefinedRunID=${{ parameters.PipelineRunIDOptional }}
+        echo "##vso[task.setvariable variable=RunID;]$PredefinedRunID"
         echo "The runID is $(RunID)"
       
       fi  
