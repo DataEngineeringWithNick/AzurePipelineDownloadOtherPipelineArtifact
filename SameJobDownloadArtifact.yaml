@@ -51,7 +51,7 @@ jobs:
       runVersion: "specific"
       project: "AzurePipelineDataFactoryCICD"
       pipeline: ${{ parameters.PipelineID }}
-      runId: $[variables.RunID] # Uses the RunID variable created in the previous bash script step above.
+      runId: $[ variables['RunID'] ] # Uses the RunID variable created in the previous bash script step above.
       artifactName: "ADFArtifact"
       targetpath: "$(Pipeline.Workspace)/MyPipelineFolder"
   
