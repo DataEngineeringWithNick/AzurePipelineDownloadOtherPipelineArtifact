@@ -38,6 +38,7 @@ jobs:
     displayName: "Download The ADF Artifact"
     inputs:
       buildType: "specific"
+      runVersion: "specific"
       project: "AzurePipelineDataFactoryCICD"
       pipeline: ${{ parameters.PipelineID }}
       runId: "$(PipelineRunID)"
