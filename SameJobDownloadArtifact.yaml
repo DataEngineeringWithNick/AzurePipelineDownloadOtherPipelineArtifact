@@ -37,11 +37,12 @@ jobs:
       else
         echo "The predefined pipeline RunID that will be used is: ${{ parameters.PipelineRunIDOptional }}"
         echo "##vso[task.setvariable variable=RunID;]${{ parameters.PipelineRunIDOptional }}"
+        echo "The runID is $(RunID)"
       
       fi  
     env:
       AZURE_DEVOPS_EXT_PAT: $(System.AccessToken) # $(System.AccessToken) is a predefined variable used during the run. https://learn.microsoft.com/en-us/azure/devops/pipelines/build/variables?view=azure-devops&tabs=yaml
-      # AZURE_DEVOPS_EXT_PAT allows you to authenticate and use the Auzre DevOps CLI: https://learn.microsoft.com/en-us/azure/devops/cli/azure-devops-cli-in-yaml?view=azure-devops
+      # AZURE_DEVOPS_EXT_PAT allows you to authenticate and use the Azure DevOps CLI: https://learn.microsoft.com/en-us/azure/devops/cli/azure-devops-cli-in-yaml?view=azure-devops
     displayName: "Get Or Use The Other Pipeline Run ID"
     
   - task: DownloadPipelineArtifact@2
