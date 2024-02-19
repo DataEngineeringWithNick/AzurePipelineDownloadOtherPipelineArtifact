@@ -1,6 +1,9 @@
-name: DownloadArtifactFromDataFactoryCICDPipeline-$(Date:yyyyMMdd)$(Rev:.r)
+name: DownloadArtifactFromAnotherPipeline-$(Date:yyyyMMdd)$(Rev:.r)
 
-# How to use the RunID and download the artifact in the same job. To download the artifact in a different job, see the DifferentJobs.yaml file.
+# Overview: 
+    # Pipeline downloads an artifact from another pipeline (PipelineID parameter). 
+    # If the PipelineRunIDOptional parameter is not set (default value of 0), code finds the most recent successful pipeline run ID from the other pipeline and downloads the artifact from that run.
+    # If the PipelineRunIDOptional parameter is set to a number (not 0), code uses that pipeline run ID to download the artifact from that specific run.
 
 trigger: none # Manual trigger
 
@@ -10,43 +13,36 @@ pool:
 parameters:
 - name: PipelineID
   type: number
-  default: 1 # Pipeline ID of the other pipeline you want to grab the artifact from.
+  default: 1 # Pipeline ID of the other pipeline you want to grab the artifact from. To locate it, go to the pipeline, click edit pipeline and in the URL at the top, it will show pipelineID=somenumber.
 - name: PipelineRunIDOptional
   type: number
-  default: 0 # If 0, pipeline will automatically find the most recent pipeline RunID. Optionally, you can pass in a specific RunID the pipeline will use to grab the artifact from the other pipeline.
+  default: 0 # If 0, code will find the most recent successful run ID from the pipeline. 
+             # Optionally, you can pass a specific run ID and the pipeline will grab the artifact from the other pipeline for that specific run.
+             # To find a specific run ID for a pipeline, click on the pipeline, then on a pipeline run and in the URL at the top will be a buildID=somenumber (ex: buildID=47). buildID and runID are the same.
 
 jobs:
-- job: GetLatestSuccessfulRunIDAndDownloadArtifact 
-  # Automatically gets the latest successful run ID of the other pipeline (PipelineID parameter) and will download the artifact.
-  
+- job: GetOrUsePipelineRunIDAndDownloadArtifact   
   steps:
-# If PipelineRunIDOptional is 0 (default value), then find the latest successful pipeline run ID from the other pipeline.
-# Otherwise (else clause), use the PipelineRunIDOptional parameter and download the artifact from that specific run.
+  - checkout: self
+    displayName: "Checkout Source Repo Code"
+
+    # If PipelineRunIDOptional is 0 (default value), then find the latest successful pipeline run ID from the other pipeline.
+    # Otherwise (else clause), use the PipelineRunIDOptional parameter and download the artifact from that specific run.
   - bash: |
       if [ ${{ parameters.PipelineRunIDOptional }} -eq 0 ]; then
         LatestSuccessfulRunID=$(az pipelines build list --definition-ids ${{ parameters.PipelineID }} --detect true --org "https://dev.azure.com/DataEngineeringWithNick" --project "AzurePipelineDataFactoryCICD" --result succeeded --status completed --top 1 --query "reverse(sort_by(@, &finishTime)) | [0].id")
-        echo "The latest successful pipeline RunID is: $LatestSuccessfulRunID"
+        echo "The latest successful pipeline RunID that will be used is: $LatestSuccessfulRunID"
         echo "##vso[task.setvariable variable=RunID;]$LastestSuccessfulRunID"
-      
+
       else
-        echo "The predefined pipeline RunID is: ${{ parameters.PipelineRunIDOptional }}"
+        echo "The predefined pipeline RunID that will be used is: ${{ parameters.PipelineRunIDOptional }}"
         echo "##vso[task.setvariable variable=RunID;]${{ parameters.PipelineRunIDOptional }}"
       
       fi  
-      
-    #   ${{ if eq(parameters.PipelineRunIDOptional, 0) }}:
-    #     LatestSuccessfulRunID=$(az pipelines build list --definition-ids ${{ parameters.PipelineID }} --detect true --org "https://dev.azure.com/DataEngineeringWithNick" --project "AzurePipelineDataFactoryCICD" --result succeeded --status completed --top 1 --query "reverse(sort_by(@, &finishTime)) | [0].id")
-    #     echo "The latest successful pipeline RunID is: $LatestSuccessfulRunID"
-    #     echo "##vso[task.setvariable variable=RunID;]$LastestSuccessfulRunID"
- 
-    #   ${{ else }}:
-    #     subscriptionId: "$(PRODSubscriptionID)"
-    #     LatestSuccessfulRunID=$(az pipelines build list --definition-ids ${{ parameters.PipelineID }} --detect true --org "https://dev.azure.com/DataEngineeringWithNick" --project "AzurePipelineDataFactoryCICD" --result succeeded --status completed --top 1 --query "reverse(sort_by(@, &finishTime)) | [0].id")
-    #     echo "The latest successful pipeline RunID is: $LatestSuccessfulRunID"
-    #     echo "##vso[task.setvariable variable=RunID;]${{ parameters.PipelineRunIDOptional }}"
-    # displayName: "Get Lastest Successful Pipeline RunID"
     env:
-      AZURE_DEVOPS_EXT_PAT: $(System.AccessToken)
+      AZURE_DEVOPS_EXT_PAT: $(System.AccessToken) # $(System.AccessToken) is a predefined variable used during the run. https://learn.microsoft.com/en-us/azure/devops/pipelines/build/variables?view=azure-devops&tabs=yaml
+      # AZURE_DEVOPS_EXT_PAT allows you to authenticate and use the Auzre DevOps CLI: https://learn.microsoft.com/en-us/azure/devops/cli/azure-devops-cli-in-yaml?view=azure-devops
+    displayName: "Get Or Use The Other Pipeline Run ID"
     
   - task: DownloadPipelineArtifact@2
     displayName: "Download The ADF Artifact"
@@ -54,7 +50,7 @@ jobs:
       buildType: "specific"
       project: "AzurePipelineDataFactoryCICD"
       pipeline: ${{ parameters.PipelineID }}
-      runId: $(RunID) # Uses the variable created in the previous "Get Latest Successful Pipeline RunID" task above.
+      runId: $(RunID) # Uses the RunID variable created in the previous bash script step above.
       artifactName: "ADFArtifact"
       targetpath: "$(Pipeline.Workspace)/MyPipelineFolder"
   
