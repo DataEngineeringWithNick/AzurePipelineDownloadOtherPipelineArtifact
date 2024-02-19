@@ -30,16 +30,11 @@ jobs:
     # Otherwise (else clause), use the PipelineRunIDOptional parameter and download the artifact from that specific run.
   - bash: |
       if [ ${{ parameters.PipelineRunIDOptional }} -eq 0 ]; then
-        LatestSuccessfulRunID=$(az pipelines build list --definition-ids ${{ parameters.PipelineID }} --detect true --org "https://dev.azure.com/DataEngineeringWithNick" --project "AzurePipelineDataFactoryCICD" --result succeeded --status completed --top 1 --query "reverse(sort_by(@, &finishTime)) | [0].id")
-        echo "The latest successful pipeline RunID that will be used is: $LatestSuccessfulRunID"
-        echo "##vso[task.setvariable variable=RunID;]$LastestSuccessfulRunID"
-        echo "run id is $(RunID)"
+        echo "test"
 
       else
         echo "The predefined pipeline RunID that will be used is: ${{ parameters.PipelineRunIDOptional }}"
-        PredefinedRunID=${{ parameters.PipelineRunIDOptional }}
-        echo "##vso[task.setvariable variable=RunID;]$PredefinedRunID"
-        echo "The runID is $(RunID)"
+        echo "##vso[task.setvariable variable=RunID;]${{ parameters.PipelineRunIDOptional }}"
       
       fi  
     env:
