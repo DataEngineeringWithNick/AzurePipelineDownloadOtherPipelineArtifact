@@ -1,5 +1,7 @@
 name: DownloadArtifactFromDataFactoryCICDPipeline-$(Date:yyyyMMdd)$(Rev:.r)
 
+#https://stackoverflow.com/questions/59369619/how-to-use-output-variables-in-release-pipeline
+
 # How to use the RunID in a different job. For the same job, see the SameJobDownloadArtifact.yaml file.
 # To pass in dynamic values, see the SameJobDownloadArtifact.yaml file. This one is just to show how to pass in the RunID between jobs.
 
