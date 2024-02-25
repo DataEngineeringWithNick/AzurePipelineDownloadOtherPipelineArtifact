@@ -61,7 +61,7 @@ jobs:
 
     
 - job: DownloadOtherPipelineArtifact
-  dependsOn: GetLatestSuccessfulRunID
+  dependsOn: GetOrUsePipelineRunIDAndDownloadArtifact
   condition: succeeded()
   displayName: "Download Other Pipeline Artifact"
   variables:
