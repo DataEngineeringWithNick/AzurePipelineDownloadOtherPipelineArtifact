@@ -48,7 +48,7 @@ jobs:
       runVersion: "specific"
       project: "AzurePipelineDataFactoryCICD"
       pipeline: ${{ parameters.PipelineID }}
-      runId: $(PipelineRunID)
+      runId: $(StorePipelineRunIDPipelineRunID)
       artifactName: "ADFArtifact"
       targetpath: "$(Pipeline.Workspace)/MyPipelineFolder"
 
