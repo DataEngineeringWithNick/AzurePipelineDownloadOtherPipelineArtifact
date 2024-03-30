@@ -1,8 +1,11 @@
 name: DownloadArtifactFromDataFactoryCICDPipeline-$(Date:yyyyMMdd)$(Rev:.r)
 
-#https://stackoverflow.com/questions/59369619/how-to-use-output-variables-in-release-pipeline
-
 # How to use the run ID in a different job. For the same job, see the SameJobDownloadArtifact.yaml file.
+
+# Helpful links:
+# https://stackoverflow.com/questions/59369619/how-to-use-output-variables-in-release-pipeline
+# Define variables in a pipeline: https://learn.microsoft.com/en-us/azure/devops/pipelines/process/variables?view=azure-devops&tabs=yaml%2Cbatch#set-a-multi-job-output-variable
+
 
 trigger: none # manual trigger
 
@@ -41,12 +44,16 @@ jobs:
       # AZURE_DEVOPS_EXT_PAT allows you to authenticate and use the Azure DevOps CLI: https://learn.microsoft.com/en-us/azure/devops/cli/azure-devops-cli-in-yaml?view=azure-devops
     name: StorePipelineRunID
 
+
 - job: DownloadPipelineArtifact
   dependsOn: GetPipelineRunIDToDownloadArtifact
   condition: succeeded()
   variables:
     PipelineRunIDToDownloadArtifact: $[ dependencies.GetPipelineRunIDToDownloadArtifact.outputs['StorePipelineRunID.PipelineRunID'] ]
   steps:
+  - checkout: self
+    displayName: "Checkout Source Repo Code"
+
   - powershell: |
       Write-Host "Pipeline run ID to download the artifact: $(PipelineRunIDToDownloadArtifact)"
     displayName: "Display Pipeline run ID"

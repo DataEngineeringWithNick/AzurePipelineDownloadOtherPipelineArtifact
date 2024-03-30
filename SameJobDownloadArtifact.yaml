@@ -1,8 +1,11 @@
 name: DownloadArtifactFromDataFactoryCICDPipeline-$(Date:yyyyMMdd)$(Rev:.r)
 
-#https://stackoverflow.com/questions/59369619/how-to-use-output-variables-in-release-pipeline
-
 # How to use the run ID in the same job. To pass the run ID to another job, see the DifferentJobDownloadArtifact.yaml file.
+
+# Helpful links:
+# https://stackoverflow.com/questions/59369619/how-to-use-output-variables-in-release-pipeline
+# Define variables in a pipeline: https://learn.microsoft.com/en-us/azure/devops/pipelines/process/variables?view=azure-devops&tabs=yaml%2Cbatch#set-a-multi-job-output-variable
+
 
 trigger: none # manual trigger
 
