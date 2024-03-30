@@ -42,7 +42,7 @@ jobs:
   
   - powershell: |
       Write-Host "##vso[task.setvariable variable=myOutputVar;isoutput=true]123"
-      [string]$TestData = LatestSuccessfulRunID=$(az pipelines build list --definition-ids ${{ parameters.PipelineID }} --detect true --org "https://dev.azure.com/DataEngineeringWithNick" --project "AzurePipelineDataFactoryCICD" --result succeeded --status completed --top 1 --query "reverse(sort_by(@, &finishTime)) | [0].id")
+      [string]$TestData =$(az pipelines build list --definition-ids ${{ parameters.PipelineID }} --detect true --org "https://dev.azure.com/DataEngineeringWithNick" --project "AzurePipelineDataFactoryCICD" --result succeeded --status completed --top 1 --query "reverse(sort_by(@, &finishTime)) | [0].id")
       Write-Host $TestData
       Write-Host "##vso[task.setvariable variable=myOutputVar2;isoutput=true]$TestData"
     name: passOutput
