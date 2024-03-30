@@ -70,10 +70,10 @@ jobs:
       targetpath: "$(Pipeline.Workspace)/MyPipelineFolder"
 
   - task: CmdLine@2
-  displayName: "List Contents of the Pipeline ADF Artifact Workspace"
-  inputs:
-    script: dir
-    workingDirectory: "$(Pipeline.Workspace)/MyPipelineFolder"
+    displayName: "List Contents of the Pipeline ADF Artifact Workspace"
+    inputs:
+      script: dir
+      workingDirectory: "$(Pipeline.Workspace)/MyPipelineFolder"
 
 
 
