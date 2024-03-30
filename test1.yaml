@@ -46,11 +46,11 @@ jobs:
       if [ ${{ parameters.PipelineRunIDOptional }} -eq 0 ]; then
         LatestSuccessfulRunID=$(az pipelines build list --definition-ids ${{ parameters.PipelineID }} --detect true --org "https://dev.azure.com/DataEngineeringWithNick" --project "AzurePipelineDataFactoryCICD" --result succeeded --status completed --top 1 --query "reverse(sort_by(@, &finishTime)) | [0].id")
         echo "The latest successful pipeline RunID that will be used is: $LatestSuccessfulRunID"
-        echo "##vso[task.setvariable variable=RunID;isOutput=true]$LastestSuccessfulRunID"
+        echo "##vso[task.setvariable variable=MYRunID;isOutput=true]$LastestSuccessfulRunID"
 
       else
         echo "The predefined pipeline RunID that will be used is: ${{ parameters.PipelineRunIDOptional }}"
-        echo "##vso[task.setvariable variable=RunID;isOutput=true]${{ parameters.PipelineRunIDOptional }}"
+        echo "##vso[task.setvariable variable=MYRunID;isOutput=true]${{ parameters.PipelineRunIDOptional }}"
       
       fi  
     env:
@@ -67,8 +67,11 @@ jobs:
   condition: succeeded()
   displayName: "Download Other Pipeline Artifact"
   variables:
-    PipelineRunID: $[ dependencies.GetOrUsePipelineRunIDAndDownloadArtifact.outputs['GetPipelineRunIDScript.RunID'] ]
+    PipelineRunID: $[ dependencies.GetOrUsePipelineRunIDAndDownloadArtifact.outputs['GetPipelineRunIDScript.MYRunID'] ]
   steps:
+  - script: echo ($PipelineRunID)
+  
+  
   - task: DownloadPipelineArtifact@2
     displayName: "Download The ADF Artifact"
     inputs:
