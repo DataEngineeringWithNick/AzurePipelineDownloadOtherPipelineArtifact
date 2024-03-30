@@ -69,7 +69,7 @@ jobs:
   variables:
     PipelineRunID: $[ dependencies.GetOrUsePipelineRunIDAndDownloadArtifact.outputs['GetPipelineRunIDScript.MYRunID'] ]
   steps:
-  - script: echo ($PipelineRunID)
+  - pwsh: echo $(PipelineRunID)
   
   
   - task: DownloadPipelineArtifact@2
