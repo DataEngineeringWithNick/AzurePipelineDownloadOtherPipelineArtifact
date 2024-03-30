@@ -57,7 +57,17 @@ jobs:
   steps:
   - powershell: |
       Write-Host $(myVarFromJobA)
-
+  
+  - task: DownloadPipelineArtifact@2
+    displayName: "Download The ADF Artifact"
+    inputs:
+      buildType: "specific"
+      runVersion: "specific"
+      project: "AzurePipelineDataFactoryCICD"
+      pipeline: ${{ parameters.PipelineID }}
+      runId: $(myVarFromJobA)
+      artifactName: "ADFArtifact"
+      targetpath: "$(Pipeline.Workspace)/MyPipelineFolder"
 
 
 
