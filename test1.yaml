@@ -42,9 +42,12 @@ jobs:
   
   - powershell: |
       Write-Host "##vso[task.setvariable variable=myOutputVar;isoutput=true]123"
-      [string]$TestData =$(az pipelines build list --definition-ids ${{ parameters.PipelineID }} --detect true --org "https://dev.azure.com/DataEngineeringWithNick" --project "AzurePipelineDataFactoryCICD" --result succeeded --status completed --top 1 --query "reverse(sort_by(@, &finishTime)) | [0].id")
+      $TestData=$(az pipelines build list --definition-ids ${{ parameters.PipelineID }} --detect true --org "https://dev.azure.com/DataEngineeringWithNick" --project "AzurePipelineDataFactoryCICD" --result succeeded --status completed --top 1 --query "reverse(sort_by(@, &finishTime)) | [0].id")
       Write-Host $TestData
       Write-Host "##vso[task.setvariable variable=myOutputVar2;isoutput=true]$TestData"
+    env:
+      AZURE_DEVOPS_EXT_PAT: $(System.AccessToken) # $(System.AccessToken) is a predefined variable used during the run. https://learn.microsoft.com/en-us/azure/devops/pipelines/build/variables?view=azure-devops&tabs=yaml
+      # AZURE_DEVOPS_EXT_PAT allows you to authenticate and use the Azure DevOps CLI: https://learn.microsoft.com/en-us/azure/devops/cli/azure-devops-cli-in-yaml?view=azure-devops
     name: passOutput
 
 - job: B
@@ -71,28 +74,28 @@ jobs:
 
 
 
-# - job: GetOrUsePipelineRunIDAndDownloadArtifact   
-#   steps:
-#   - checkout: self
-#     displayName: "Checkout Source Repo Code"
+- job: GetOrUsePipelineRunIDAndDownloadArtifact   
+  steps:
+  - checkout: self
+    displayName: "Checkout Source Repo Code"
 
-#     # If PipelineRunIDOptional is 0 (default value), then find the latest successful pipeline run ID from the other pipeline.
-#     # Otherwise (else clause), use the PipelineRunIDOptional parameter and download the artifact from that specific run.
-#   - bash: |
-#       if [ ${{ parameters.PipelineRunIDOptional }} -eq 0 ]; then
-#         LatestSuccessfulRunID=$(az pipelines build list --definition-ids ${{ parameters.PipelineID }} --detect true --org "https://dev.azure.com/DataEngineeringWithNick" --project "AzurePipelineDataFactoryCICD" --result succeeded --status completed --top 1 --query "reverse(sort_by(@, &finishTime)) | [0].id")
-#         echo "The latest successful pipeline RunID that will be used is: $LatestSuccessfulRunID"
-#         echo "##vso[task.setvariable variable=MYRunID;isOutput=true]$LastestSuccessfulRunID"
+    # If PipelineRunIDOptional is 0 (default value), then find the latest successful pipeline run ID from the other pipeline.
+    # Otherwise (else clause), use the PipelineRunIDOptional parameter and download the artifact from that specific run.
+  - bash: |
+      if [ ${{ parameters.PipelineRunIDOptional }} -eq 0 ]; then
+        LatestSuccessfulRunID=$(az pipelines build list --definition-ids ${{ parameters.PipelineID }} --detect true --org "https://dev.azure.com/DataEngineeringWithNick" --project "AzurePipelineDataFactoryCICD" --result succeeded --status completed --top 1 --query "reverse(sort_by(@, &finishTime)) | [0].id")
+        echo "The latest successful pipeline RunID that will be used is: $LatestSuccessfulRunID"
+        echo "##vso[task.setvariable variable=MYRunID;isOutput=true]$LastestSuccessfulRunID"
 
-#       else
-#         echo "The predefined pipeline RunID that will be used is: ${{ parameters.PipelineRunIDOptional }}"
-#         echo "##vso[task.setvariable variable=MYRunID;isOutput=true]${{ parameters.PipelineRunIDOptional }}"
+      else
+        echo "The predefined pipeline RunID that will be used is: ${{ parameters.PipelineRunIDOptional }}"
+        echo "##vso[task.setvariable variable=MYRunID;isOutput=true]${{ parameters.PipelineRunIDOptional }}"
        
-#     env:
-#       AZURE_DEVOPS_EXT_PAT: $(System.AccessToken) # $(System.AccessToken) is a predefined variable used during the run. https://learn.microsoft.com/en-us/azure/devops/pipelines/build/variables?view=azure-devops&tabs=yaml
-#       # AZURE_DEVOPS_EXT_PAT allows you to authenticate and use the Azure DevOps CLI: https://learn.microsoft.com/en-us/azure/devops/cli/azure-devops-cli-in-yaml?view=azure-devops
-#     name: GetPipelineRunIDScript
-#     displayName: "Get Or Use The Other Pipeline Run ID"
+    env:
+      AZURE_DEVOPS_EXT_PAT: $(System.AccessToken) # $(System.AccessToken) is a predefined variable used during the run. https://learn.microsoft.com/en-us/azure/devops/pipelines/build/variables?view=azure-devops&tabs=yaml
+      # AZURE_DEVOPS_EXT_PAT allows you to authenticate and use the Azure DevOps CLI: https://learn.microsoft.com/en-us/azure/devops/cli/azure-devops-cli-in-yaml?view=azure-devops
+    name: GetPipelineRunIDScript
+    displayName: "Get Or Use The Other Pipeline Run ID"
 
 
 
