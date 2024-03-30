@@ -1,1 +1,1 @@
-# AzurePipelineAutoDownloadOtherPipelineArtifact
+# How to download artifacts from another pipeline.
