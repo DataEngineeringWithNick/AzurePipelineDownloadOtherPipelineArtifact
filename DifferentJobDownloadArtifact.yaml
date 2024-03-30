@@ -49,6 +49,7 @@ jobs:
   steps:
   - powershell: |
       Write-Host "Pipeline run ID to download the artifact: $(PipelineRunIDToDownloadArtifact)"
+    displayName: "Display Pipeline run ID"
   
   - task: DownloadPipelineArtifact@2
     displayName: "Download The ADF Artifact"
