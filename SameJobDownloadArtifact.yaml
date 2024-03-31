@@ -32,7 +32,15 @@ jobs:
     # Otherwise (else clause), use the PipelineRunIDOptional parameter and download the artifact from that specific run.
   - powershell: |
       if(${{ parameters.PipelineRunIDOptional }} -eq 0){
-        [string]$LatestSuccessfulRunID=$(az pipelines build list --definition-ids ${{ parameters.PipelineID }} --detect true --org "https://dev.azure.com/DataEngineeringWithNick" --project "AzurePipelineDataFactoryCICD" --result succeeded --status completed --top 1 --query "reverse(sort_by(@, &finishTime)) | [0].id")
+        [string]$LatestSuccessfulRunID=$(az pipelines build list --definition-ids ${{ parameters.PipelineID }} 
+                                                                 --detect true 
+                                                                 --org "https://dev.azure.com/DataEngineeringWithNick" 
+                                                                 --project "AzurePipelineDataFactoryCICD" 
+                                                                 --result succeeded 
+                                                                 --status completed 
+                                                                 --top 1 
+                                                                 --query "reverse(sort_by(@, &finishTime)) | [0].id"
+                                        )
         Write-Host "Latest successful pipeline run ID that will be used to download the artifact: $LatestSuccessfulRunID"
         Write-Host "##vso[task.setvariable variable=PipelineRunID;isoutput=true]$LatestSuccessfulRunID"
       }else {
