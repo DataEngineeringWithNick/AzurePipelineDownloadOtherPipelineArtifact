@@ -36,7 +36,7 @@ jobs:
                                                                  --org "https://dev.azure.com/DataEngineeringWithNick" `
                                                                  --project "AzurePipelineDataFactoryCICD" --result succeeded `
                                                                  --status completed --top 1 `
-                                                                 --query "reverse(sort_by(@, &finishTime)) | [0].id"
+                                                                 --query "reverse(sort_by(@, &finishTime)) | [0].id" `
                                                                  
                                                                  
                                         )
